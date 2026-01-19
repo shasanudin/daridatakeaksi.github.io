@@ -1,0 +1,96 @@
+/* ===== GLOBAL ===== */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #212529;
+  background-color: #ffffff;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
+/* ===== HEADER ===== */
+header {
+  border-bottom: 1px solid #dee2e6;
+}
+
+header strong {
+  font-size: 1.1rem;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.navbar .nav-link {
+  font-weight: 500;
+  color: #333;
+}
+
+.navbar .nav-link:hover {
+  color: #0056b3;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: #343a40;
+  color: #fff;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+}
+
+.hero p {
+  max-width: 600px;
+}
+
+/* ===== DATA DTSEN ===== */
+#data h2 {
+  margin-bottom: 0.5rem;
+}
+
+#data .card {
+  border: 1px solid #e0e0e0;
+}
+
+#data .card h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0;
+}
+
+#data ul {
+  padding-left: 1.2rem;
+}
+
+#data ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* ===== SECTION BACKGROUND ===== */
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  border-top: 1px solid #dee2e6;
+  color: #6c757d;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  header {
+    text-align: center;
+  }
+}
