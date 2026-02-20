@@ -1,50 +1,587 @@
 <!DOCTYPE html>
-	<html>
-		<head>
-			<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-			<meta content="utf-8" http-equiv="encoding">
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-			<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-			<title>The Galactic Lottery and Satoshi Lost Keys - Run Script</title>
-		</head>
-		<body>
-			<div id="content">
-				<div id="cont">
-					<div id="terminal">
-						<div id="terminal2">
-							<div>
-								<div id="headtext">
-									<h1>terminal</h1>
-								</div>
-								<div id="timeCount" style="text-align:right; padding-top:10px;">timer: <label id="days">00</label>:<label id="hours">00</label>:<label id="minutes">00</label>:<label id="seconds">00</label>
-								</div>
-							</div>
-							<div id="myLog" style="height:400px; overflow: hidden; border: solid;">
-						</div>
-						<div id="keyCount"><span>number of trials: </span>&nbsp;&nbsp;<span id="keyCountS">0</span>
-						</div>
-						<div id="keyCount" style="padding-top:15px;"><span style="font-size:15px;">
-							<ul id"more">
-								<li>in case the script finds a match to one of satoshi's lost private keys, the script will print the winning private key in bitcoin WIF format and finish running. to claim your reward copy the winning private key and restore it on any bitcoin wallet. </li>
-								&nbsp;
-								<li> for more information about the galactic lottery script you can read our <a href="http://www.thegalacticlottery.com/#content">white paper </a> or audit the script on <a href="https://github.com/" >github</a>.</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			<a id="donation" href="bitcoin:12sdX7hw9ZiquKPtzdPDsYuBiSs42t4ov8" style="text-decoration:none; color:black;">
-				<div id="donation2">
-					<div id="contentcon">
-						<p id="textd">BE AN AWESOME CYBER GALACTIC FRIEND AND DONATE SOME BITCOIN.</p>
-						<img src="http://www.thegalacticlottery.com/wp-content/uploads/2018/01/DONATION-e1516989720594.png">
-					</div>
-				</div>
-			</a>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Galactic Lottery & Satoshi's Lost Keys - Terminal</title>
+    <!-- jQuery and jQuery UI -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-			<script type="text/javascript" src="BigInteger.min.js"></script>
-			<script type="text/javascript" src="keyDatabase.js"></script>
-			<script type="text/javascript" src="hashfunctions.js"></script>
-			<script type="text/javascript" src="TheGalacticLotteryScript.js"></script>
-		</body>
-	</html>
+    <!-- CSS Styles -->
+    <style>
+        body {
+            background: #0a0e1a;
+            color: #00ff9d;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+                radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px;
+            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+        }
 
+        #content {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            border: 2px solid #00ff9d;
+            box-shadow: 0 0 20px #00ff9d;
+            background: #0f1422;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        #cont {
+            padding: 20px;
+        }
+
+        #terminal {
+            border: 1px solid #00cc88;
+            background: #0b0e1a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px #00ff9d33;
+        }
+
+        #terminal2 {
+            background: #050914;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        #headtext h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #00ff9d;
+            text-shadow: 0 0 10px #00ff9d;
+            border-bottom: 1px solid #00ff9d;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        #timeCount {
+            color: #ffb86b;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            border: 1px solid #ffb86b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            float: right;
+            background: #1a1e30;
+        }
+
+        #myLog {
+            height: 350px;
+            overflow-y: auto;
+            background: #030614;
+            border: 2px solid #00cc88;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #bfbfbf;
+            box-shadow: inset 0 0 15px #00ff9d22;
+            scroll-behavior: smooth;
+        }
+
+        #myLog div {
+            border-bottom: 1px dashed #333;
+            padding: 2px 5px;
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #myLog div:nth-child(odd) {
+            background: #0a0e1a55;
+        }
+
+        #keyCount {
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: #ffb86b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #keyCountS {
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #00ff9d;
+            background: #1a1e30;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #00ff9d;
+        }
+
+        #winnerTextBox {
+            margin-top: 15px;
+            background: #1a1e30;
+            border: 2px solid gold;
+            border-radius: 10px;
+            padding: 15px;
+            color: gold;
+            text-shadow: 0 0 5px orange;
+            display: none; /* Hidden by default */
+            box-shadow: 0 0 20px gold;
+        }
+
+        #winnerTextBox h3 {
+            margin: 0 0 10px 0;
+            color: #ffd700;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        #winnerContent {
+            background: #0f1422;
+            border: 1px solid #ffd700;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            word-break: break-all;
+            color: #ffd700;
+            box-shadow: inset 0 0 10px #ffd70033;
+        }
+
+        .winner-label {
+            color: #00ff9d;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        ul#more {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0 0 0;
+            font-size: 0.95em;
+            color: #ccc;
+        }
+
+        ul#more li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2300ff9d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>') left center no-repeat;
+            background-size: 16px;
+        }
+
+        ul#more a {
+            color: #00ff9d;
+            text-decoration: none;
+            border-bottom: 1px dashed #00ff9d;
+        }
+
+        ul#more a:hover {
+            color: white;
+            border-bottom: 1px solid white;
+        }
+
+        #donation {
+            text-decoration: none;
+        }
+
+        #donation2 {
+            background: linear-gradient(145deg, #1a1e30, #0f1422);
+            border: 2px solid #00ff9d;
+            border-radius: 50px;
+            margin-top: 20px;
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #00ff9d;
+            transition: all 0.3s ease;
+        }
+
+        #donation2:hover {
+            border-color: gold;
+            box-shadow: 0 0 30px gold;
+            transform: scale(1.02);
+        }
+
+        #contentcon {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        #textd {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        #donation2 img {
+            height: 50px;
+            border-radius: 10px;
+        }
+
+        /* Clearfix */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+
+    <!-- External Scripts (BigInteger, Database, Hash Functions) -->
+    <script src="BigInteger.min.js"></script>
+    <script src="keyDatabase.js"></script>
+    <script src="hashfunctions.js"></script>
+</head>
+<body>
+    <div id="content">
+        <div id="cont">
+            <div id="terminal">
+                <div id="terminal2">
+                    <div class="clearfix">
+                        <div id="headtext">
+                            <h1>TERMINAL v1.0</h1>
+                        </div>
+                        <div id="timeCount">
+                            TIMER: <label id="days">00</label>:<label id="hours">00</label>:<label id="minutes">00</label>:<label id="seconds">00</label>
+                        </div>
+                    </div>
+
+                    <!-- Log Console -->
+                    <div id="myLog"></div>
+
+                    <!-- Key Counter -->
+                    <div id="keyCount">
+                        <span>🔑 TRIALS COMPLETED:</span>
+                        <span id="keyCountS">0</span>
+                    </div>
+
+                    <!-- Winner Text Box (hidden until win) -->
+                    <div id="winnerTextBox">
+                        <h3>🏆 WE HAVE A WINNER! 🏆</h3>
+                        <div id="winnerContent">
+                            <!-- Content will be injected by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Info List -->
+                    <ul id="more">
+                        <li>In case the script finds a match to one of Satoshi's lost private keys, the script will print the winning private key in Bitcoin WIF format above and finish running. To claim your reward, copy the winning private key and restore it on any Bitcoin wallet.</li>
+                        <li>For more information about The Galactic Lottery script, you can read our <a href="http://www.thegalacticlottery.com/#content">white paper</a> or audit the script on <a href="https://github.com/">GitHub</a>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Donation Link -->
+            <a id="donation" href="bitcoin:12sdX7hw9ZiquKPtzdPDsYuBiSs42t4ov8" target="_blank">
+                <div id="donation2">
+                    <div id="contentcon">
+                        <p id="textd">✨ BE AN AWESOME CYBER GALACTIC FRIEND AND DONATE SOME BITCOIN ✨</p>
+                        <img src="http://www.thegalacticlottery.com/wp-content/uploads/2018/01/DONATION-e1516989720594.png" alt="Donate Bitcoin">
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Script (TheGalacticLotteryScript) - Modified to include winner box feature -->
+    <script>
+        /*=============================================================================
+          THE GALACTIC LOTTERY SCRIPT - MODIFIED FOR WINNER TEXT BOX
+          Original script by TheGalacticLottery, adapted for HTML display.
+        =============================================================================*/
+
+        // --- PRINT FUNCTIONS (modified to also update winner box) ---
+        function print(str) {
+            $('#myLog').append('<div></div>');
+            $('#myLog div:last').text(str);
+            var objDiv = document.getElementById("myLog");
+            objDiv.scrollTop = objDiv.scrollHeight;
+            linecount = linecount + 1;
+            if (linecount > 100) {
+                $("#myLog div").first().remove();
+            }
+            return (linecount);
+        }
+
+        function printN(str) {
+            $('#keyCountS').text(str);
+        }
+
+        // --- TIMER FUNCTIONS (unchanged) ---
+        var daysLabel = document.getElementById("days");
+        var hoursLabel = document.getElementById("hours");
+        var minutesLabel = document.getElementById("minutes");
+        var secondsLabel = document.getElementById("seconds");
+        var totalSeconds = 0;
+        setInterval(setTime, 1000);
+
+        function setTime() {
+            ++totalSeconds;
+            secondsLabel.innerHTML = pad(totalSeconds % 60);
+            var minu = Math.floor(totalSeconds / 60);
+            minutesLabel.innerHTML = pad(minu % 60);
+            var hou = Math.floor(totalSeconds / 60 / 60);
+            hoursLabel.innerHTML = pad(hou % 24);
+            daysLabel.innerHTML = pad(parseInt(totalSeconds / 86400));
+        }
+
+        function pad(val) {
+            var valString = val + "";
+            if (valString.length < 2) {
+                return "0" + valString;
+            } else {
+                return valString;
+            }
+        }
+
+        // --- ELLIPTIC CURVE SECP256K1 (unchanged) ---
+        var Pcurve = bigInt("115792089237316195423570985008687907853269984665640564039457584007908834671663");
+        var N = bigInt("115792089237316195423570985008687907852837564279074904382605163141518161494337");
+        var Acurve = bigInt("0");
+        var Bcurve = bigInt("7");
+        var Gx = bigInt("55066263022277343669578718895168534326250603453777594175500187360389116729240");
+        var Gy = bigInt("32670510020758816978083085130507043184471273380659243275938904335757337482424");
+        var GPoint = [Gx, Gy];
+        var stop = 0;
+
+        function modinv(a, n) {
+            lm = 1;
+            hm = 0;
+            low1 = bigInt(a).mod(bigInt(n));
+            low2 = bigInt(low1).add(bigInt(n));
+            low = bigInt(low2).mod(bigInt(n));
+            high = bigInt(n);
+            while (bigInt(low).compare(bigInt(1)) == 1) {
+                ratio = bigInt(high).divide(bigInt(low));
+                nm1 = bigInt(lm).multiply(bigInt(ratio));
+                nm = bigInt(hm).subtract(bigInt(nm1));
+                new2 = bigInt(low).multiply(bigInt(ratio));
+                new1 = bigInt(high).subtract(new2);
+                high = bigInt(low);
+                hm = bigInt(lm);
+                lm = bigInt(nm);
+                low = bigInt(new1);
+            }
+            re1 = bigInt(lm).mod(bigInt(n));
+            re2 = bigInt(re1).add(bigInt(n));
+            re = bigInt(re2).mod(bigInt(n));
+            return (re);
+        }
+
+        function ECadd(a, b) {
+            b0 = bigInt(b[0]);
+            b1 = bigInt(b[1]);
+            a0 = bigInt(a[0]);
+            a1 = bigInt(a[1]);
+            LamAdd1 = bigInt(b1).subtract(bigInt(a1));
+            LamAdd2 = bigInt(b0).subtract(bigInt(a0));
+            LamAdd3 = modinv(bigInt(LamAdd2), bigInt(Pcurve));
+            LamAdd4 = bigInt(LamAdd1).multiply(bigInt(LamAdd3));
+            LamAdd5 = bigInt(LamAdd4).mod(bigInt(Pcurve));
+            LamAdd6 = bigInt(LamAdd5).add(bigInt(Pcurve));
+            LamAdd = bigInt(LamAdd6).mod(bigInt(Pcurve));
+            x1 = bigInt(LamAdd).multiply(bigInt(LamAdd));
+            x2 = bigInt(x1).subtract(bigInt(a0));
+            x3 = bigInt(x2).subtract(bigInt(b0));
+            x4 = bigInt(x3).mod(bigInt(Pcurve));
+            x5 = bigInt(x4).add(bigInt(Pcurve));
+            x = bigInt(x5).mod(bigInt(Pcurve));
+            y1 = bigInt(a0).subtract(bigInt(x));
+            y2 = bigInt(LamAdd).multiply(bigInt(y1));
+            y3 = bigInt(y2).subtract(bigInt(a1));
+            y4 = bigInt(y3).mod(bigInt(Pcurve));
+            y5 = bigInt(y4).add(bigInt(Pcurve));
+            y = bigInt(y5).mod(bigInt(Pcurve));
+            return [x, y];
+        }
+
+        function ECdouble(a) {
+            a0 = bigInt(a[0]);
+            a1 = bigInt(a[1]);
+            lamA1 = bigInt(3).multiply(a0);
+            lamA2 = bigInt(lamA1).multiply(bigInt(a0));
+            lamA3 = bigInt(lamA2).add(bigInt(Acurve));
+            lamB1 = bigInt(2).multiply(bigInt(a1));
+            lamB2 = modinv(bigInt(lamB1), bigInt(Pcurve));
+            lamB3 = bigInt(lamB2).multiply(bigInt(lamA3));
+            Lam1 = bigInt(lamB3).mod(bigInt(Pcurve));
+            Lam2 = bigInt(Lam1).add(bigInt(Pcurve));
+            Lam = bigInt(Lam2).mod(bigInt(Pcurve));
+            x1 = bigInt(Lam).multiply(bigInt(Lam));
+            x2 = bigInt(2).multiply(bigInt(a[0]));
+            x3 = bigInt(x1).subtract(bigInt(x2));
+            x4 = bigInt(x3).mod(bigInt(Pcurve));
+            x5 = bigInt(x4).add(bigInt(Pcurve));
+            x = bigInt(x5).mod(bigInt(Pcurve));
+            y1 = bigInt(a[0]).subtract(bigInt(x));
+            y2 = bigInt(Lam).multiply(bigInt(y1));
+            y3 = bigInt(y2).subtract(bigInt(a[1]));
+            y4 = bigInt(y3).mod(bigInt(Pcurve));
+            y5 = bigInt(y4).add(bigInt(Pcurve));
+            y = bigInt(y5).mod(bigInt(Pcurve));
+            return [x, y];
+        };
+
+        function EccMultiply(GenPoint, Scalar) {
+            ScalarSub = bigInt(N).subtract(Scalar);
+            if (bigInt(N).compare(Scalar) == -1 || bigInt(Scalar).compare(0) == 0) {
+                print("Invalid Private Key");
+            } else {
+                ScalarBin = bigInt(Scalar).toString(2);
+                var Q = GenPoint;
+                var i = 1;
+                while (i < ScalarBin.length) {
+                    Q = ECdouble(bigInt(Q));
+                    if (ScalarBin[i] == "1") {
+                        Q = ECadd(bigInt(Q), bigInt(GenPoint));
+                    }
+                    var i = i + 1;
+                }
+                return (Q);
+            }
+        }
+
+        // --- Pseudo-random function (unchanged) ---
+        function randomval() {
+            array = new Uint8Array(totalBytesf);
+            var crypto = window.crypto || window.msCrypto;
+            randomNum = crypto.getRandomValues(array);
+            var wloop = 1;
+            var sumBytes = randomNum[0].toString(16);
+            while (bigInt(totalBytesf).subtract(wloop) > 0) {
+                sumBytes = sumBytes.concat(randomNum[wloop].toString(16));
+                wloop = bigInt(wloop).add(1);
+            }
+            window.sumBytesf = sumBytes;
+        }
+
+        // --- Private Key DEC to WIF (unchanged) ---
+        function privDec2Wif(dec) {
+            privBin = dec.toString(2);
+            prifix = "10000000";
+            prepend0a = 256 - privBin.length;
+            prepend0b = prifix.concat(Array(prepend0a + 1).join("0"), privBin);
+            bin2Hex = bigInt(prepend0b, 2).toString(16);
+            binDecode = hex2a(bin2Hex);
+            sha256x1 = SHA256(binDecode);
+            binDecodesha = hex2a(sha256x1);
+            sha256x2 = SHA256(binDecodesha);
+            checksum = sha256x2.substr(0, 8);
+            prewif = bin2Hex.concat(checksum);
+            privWif = enc64_58(prewif);
+            return (privWif);
+        }
+
+        // --- Start function (unchanged) ---
+        function start1() {
+            blockSize = bigInt("100");
+            blocklimit = bigInt(N).divide(blockSize);
+            blocklimitHex = blocklimit.toString(16);
+            totalBytes = blocklimit.toString(16).length;
+            if (totalBytes % 2 == 0) {
+                totalBytesf = (totalBytes) / 2;
+                firstByte = blocklimitHex.charAt(0) + blocklimitHex.charAt(1);
+                firstByte1 = parseInt(firstByte, 16);
+                priHex = (Math.floor(Math.random() * firstByte1) + 0).toString(16);
+            } else {
+                totalBytesf = (totalBytes - 1) / 2;
+                firstByte = blocklimitHex.charAt(0);
+                firstByte1 = parseInt(firstByte, 16);
+                priHex = (Math.floor(Math.random() * firstByte1) + 0).toString(16);
+            }
+            randomval(totalBytesf);
+            userInputHex = priHex.concat(sumBytesf);
+            userInput = bigInt(userInputHex, 16);
+            if (bigInt(userInput).subtract(blocklimit) > 0) {
+                start1();
+            } else {
+                blockNumber = userInput;
+            }
+        }
+
+        // --- Function to show winner in the text box ---
+        function showWinner(privKeyDecimal, privKeyWIF) {
+            $('#winnerTextBox').fadeIn(500);
+            var content = '<span class="winner-label">🔑 Private Key (Decimal):</span> ' + privKeyDecimal + '<br><br>' +
+                '<span class="winner-label">💰 Private Key (WIF):</span> ' + privKeyWIF + '<br><br>' +
+                '<span style="color: #00ff9d;">🎉 Copy the WIF key and import it into your Bitcoin wallet to claim the reward! 🎉</span>';
+            $('#winnerContent').html(content);
+        }
+
+        // --- Main hashing function (modified to stop on win and show box) ---
+        function hashing() {
+            start1()
+            var loopCount = blockSize;
+            startRangeMul = bigInt(blockNumber).multiply(blockSize);
+            startRange = bigInt(startRangeMul).add("1");
+            endRange = bigInt(startRange).add(blockSize);
+            var key = startRange;
+            var y = 0;
+            print("******************************************************************");
+            var sVar = setInterval(function() {
+                if (loopCount < 1 && y < 1) {
+                    clearInterval(sVar);
+                    hashing();
+                }
+                PublicKey = EccMultiply(bigInt(GPoint), bigInt(key));
+                uncompress = "04" + bigInt(PublicKey[0]).toString(16) + PublicKey[1].toString(16);
+                uncompressbin = hex2a(uncompress);
+                outputsha256 = SHA256(uncompressbin);
+                outbin = hex2a(outputsha256);
+                outputripemd160 = RMDstring(outbin);
+                if (satoshiKeys.indexOf(outputripemd160) != -1) {
+                    lr = bigInt(key);
+                    lt = "It's a Match!!!!!!";
+                    text = "Private Key Decimal: ";
+                    text1 = "Private Key WIF: ";
+                    y = y + 1;
+                    print("*********************************************************");
+                    print(lt);
+                    print(text.concat(lr));
+                    print(text1.concat(privDec2Wif(bigInt(key))));
+                    
+                    // Show winner in the special text box
+                    showWinner(lr.toString(), privDec2Wif(bigInt(key)));
+                    
+                    clearInterval(sVar); // Stop the loop
+                } else {
+                    lr = bigInt(key);
+                    lt = "No Match!";
+                    n = n + 1;
+                    text = "Private Key Decimal: ";
+                    text1 = "Public Key Hex: ";
+                    print(text.concat(lr));
+                    print(text1.concat(outputripemd160));
+                    print(lt);
+                    print(".");
+                    printN(n);
+                }
+                key = bigInt(key).add("1");
+                loopCount = bigInt(loopCount).subtract("1");
+                return [key, loopCount, y, n];
+            }, 0);
+        };
+
+        // --- Trigger (start the script) ---
+        var linecount = 0;
+        var n = 0;
+        hashing();
+    </script>
+</body>
+</html>
