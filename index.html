@@ -3,48 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitresurector - Game Edukasi Bitcoin</title>
+    <title>Bitcoin Wallet Hunter - Mnemonic Seed Phrase Tool</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Library untuk Bitcoin dan BIP39 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bip39/2.5.0/bip39.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bitcoinjs-lib/5.2.0/bitcoinjs-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elliptic/6.5.4/elliptic.min.js"></script>
+    <!-- Library untuk QR Code -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Bitresurector</h1>
-            <p>Temukan Harta Karun Bitcoin yang Hilang!</p>
+            <h1>🔍 Bitcoin Wallet Hunter</h1>
+            <p>Tool untuk mencari wallet dari seed phrase mnemonic dengan berbagai derivation path</p>
+            <div class="warning">
+                ⚠️ <strong>Peringatan Keamanan:</strong> Gunakan offline untuk keamanan maksimal
+            </div>
         </header>
 
         <main>
-            <div class="game-area">
-                <div class="stats">
-                    <div class="score">Skor: <span id="score">0</span></div>
-                    <div class="bitcoin-found">Bitcoin Ditemukan: <span id="bitcoinCount">0</span>/10</div>
-                </div>
-
-                <div class="grid-container" id="gameGrid">
-                    <!-- Grid akan diisi oleh JavaScript -->
-                </div>
-
-                <div class="controls">
-                    <button id="resetBtn">Reset Game</button>
-                    <button id="hintBtn">Petunjuk</button>
-                </div>
-            </div>
-
-            <div class="info-panel">
-                <h3>Cara Bermain:</h3>
-                <ul>
-                    <li>Klik kotak untuk mencari Bitcoin</li>
-                    <li>Temukan 10 Bitcoin tersembunyi</li>
-                    <li>Hati-hati dengan jebakan!</li>
-                    <li>Gunakan petunjuk jika kesulitan</li>
-                </ul>
+            <!-- Input Section -->
+            <section class="input-section card">
+                <h2>📝 Input Seed Phrase</h2>
                 
-                <div class="hint-box" id="hintBox" style="display: none;">
-                    <h4>Petunjuk:</h4>
-                    <p id="hintText"></p>
+                <div class="seed-input-area">
+                    <textarea id="seedPhrase" placeholder="Masukkan seed phrase (12/24 kata)..." rows="3"></textarea>
+                    <div class="seed-options">
+                        <button id="generateBtn" class="btn secondary">🎲 Generate Random</button>
+                        <button id="clearBtn" class="btn secondary">🗑️ Clear</button>
+                    </div>
                 </div>
-            </div>
+
+                <div class="passphrase-option">
+                    <label>
+                        <input type="checkbox" id="usePassphrase"> 
+                        Gunakan Passphrase (BIP39)
+                    </label>
+                    <input type="text" id="passphrase" placeholder="Masukkan passphrase (opsional)" disabled>
+                </div>
+
+                <div class="derivation-paths">
+                    <h3>📌 Derivation Paths:</h3>
+                    <div class="path-controls">
+                        <label>
+                            <input type="checkbox" id="selectAllPaths" checked> 
+                            Select All
+                        </label>
+                        <button id="customPathBtn" class="btn small">➕ Add Custom Path</button>
+                    </div>
+                    <div class="paths-grid" id="pathsContainer">
+                        <!-- Path checkboxes akan diisi oleh JavaScript -->
+                    </div>
+                </div>
+
+                <button id="huntBtn" class="btn primary">🔍 Mulai Hunting Wallets</button>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-section card" id="progressSection" style="display: none;">
+                <h3>⏳ Progress Hunting</h3>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <p id="progressText">0/0 paths selesai</p>
+                <div id="currentPath"></div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section card" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>💰 Wallets Ditemukan</h2>
+                    <div class="results-stats">
+                        <span id="totalWallets">0</span> wallets ditemukan
+                    </div>
+                </div>
+
+                <div class="summary-box">
+                    <h4>📊 Ringkasan:</h4>
+                    <p id="seedInfo"></p>
+                    <p id="masterKeyInfo"></p>
+                </div>
+
+                <div class="wallets-grid" id="walletsContainer">
+                    <!-- Hasil wallet akan ditampilkan di sini -->
+                </div>
+
+                <div class="export-options">
+                    <button id="exportCSV" class="btn secondary">📥 Export CSV</button>
+                    <button id="exportJSON" class="btn secondary">📥 Export JSON</button>
+                    <button id="copyAll" class="btn secondary">📋 Copy All Addresses</button>
+                </div>
+            </section>
         </main>
+    </div>
+
+    <!-- Modal untuk custom path -->
+    <div id="customPathModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Tambah Custom Derivation Path</h3>
+            <input type="text" id="customPath" placeholder="Contoh: m/44'/0'/0'/0/0">
+            <p class="hint">Format: m / purpose' / coin' / account' / change / index</p>
+            <button id="addCustomPath" class="btn primary">Tambah</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
